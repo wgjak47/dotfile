@@ -66,6 +66,19 @@
   :init
   (keychain-refresh-environment))
 
+;; rime config
+(use-package! rime
+  :custom
+  (default-input-method "rime")
+  (rime-user-data-dir "/home/wgjak47/.local/share/fcitx5/rime")
+  (rime-emacs-module-header-root "/usr/include/emacs-27")
+  :config
+  (setq
+    rime-show-candidate 'posframe
+    mode-line-mule-info '((:eval (rime-lighter)))
+    rime-inline-ascii-trigger 'shift-l))
+
+
 ;; lsp-ui config
 (after! lsp-ui
   (setq lsp-ui-doc-position 'at-point
