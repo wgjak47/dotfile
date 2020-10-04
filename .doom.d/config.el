@@ -78,13 +78,10 @@
     mode-line-mule-info '((:eval (rime-lighter)))
     rime-inline-ascii-trigger 'shift-l))
 
-
 ;; lsp-ui config
 (after! lsp-ui
   (setq lsp-ui-doc-position 'at-point
         lsp-ui-doc-enable t
-        lsp-diagnostic-package :none
-        lsp-ui-flycheck-enable t
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-sideline-update-mode 'point
         lsp-ui-doc-enable t))
@@ -114,5 +111,20 @@
   (cond ((flycheck-may-use-checker 'go-test) (flycheck-select-checker 'go-test))
         ((flycheck-may-use-checker 'go-build) (flycheck-select-checker 'go-build))))
 
-;; flycheck config for golang
+;;flycheck config for golang
 (add-hook 'go-mode-hook  #'spacemacs//go-enable-flycheck-golangci-lint t)
+
+
+;; rust flycheck with lsp
+(after! lsp-rust
+  (setq lsp-rust-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  )
+
+;; add cargo edit key binding
+(map! :map rustic-mode-map
+        :localleader
+        (:prefix ("b" . "build")
+          :desc "cargo add"     "A" #'rustic-cargo-add
+          :desc "cargo upgrade" "U" #'rustic-cargo-upgrade
+          :desc "cargo rm"      "R" #'rustic-cargo-rm))
