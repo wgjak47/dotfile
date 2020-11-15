@@ -78,6 +78,22 @@
     mode-line-mule-info '((:eval (rime-lighter)))
     rime-inline-ascii-trigger 'shift-l))
 
+;; solve rime show bug
+  (defun +rime--posframe-display-content-a (args)
+    "给 `rime--posframe-display-content' 传入的字符串加一个全角空
+格，以解决 `posframe' 偶尔吃字的问题。"
+    (cl-destructuring-bind (content) args
+      (let ((newresult (if (string-blank-p content)
+                           content
+                         (concat content "　"))))
+        (list newresult))))
+
+  (if (fboundp 'rime--posframe-display-content)
+      (advice-add 'rime--posframe-display-content
+                  :filter-args
+                  #'+rime--posframe-display-content-a)
+    (error "Function `rime--posframe-display-content' is not available."))
+
 ;; lsp-ui config
 (after! lsp-ui
   (setq lsp-ui-doc-position 'at-point
@@ -96,7 +112,9 @@
                                      go-errcheck
                                      go-staticcheck
                                      go-unconvert))
+  (setq-local lsp-diagnostics-provider :none)
   (flycheck-golangci-lint-setup)
+
 
   ;; Make sure to only run golangci after go-build
   ;; to ensure we show at least basic errors in the buffer
